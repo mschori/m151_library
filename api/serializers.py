@@ -19,7 +19,7 @@ class BookSerializer(serializers.ModelSerializer):
         self.Meta.fields = fields if fields is not None else '__all__'
 
         # Call super-constructor
-        super(BookSerializer, self).__init__()
+        super(BookSerializer, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Book
