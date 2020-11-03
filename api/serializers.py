@@ -39,3 +39,32 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = '__all__'
         depth = 1
+
+
+class PlaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Place
+        fields = '__all__'
+
+
+class RentSerializer(serializers.ModelSerializer):
+    customer_pk = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), source='customer',
+                                                     write_only=True, label='Customer')
+    book_pk = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all(), source='books', write_only=True,
+                                                 many=True, label='Books')
+
+    class Meta:
+        model = Rent
+        fields = '__all__'
+        depth = 1
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    rent_list = RentSerializer(many=True, read_only=True)
+    place_pk = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), source='place', write_only=True,
+                                                  label='Place')
+
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        depth = 1
