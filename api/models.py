@@ -15,6 +15,14 @@ class Author(models.Model):
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
+    def save(self, *args, **kwargs):
+        if not self.image:
+            if self.id:
+                self.image = Author.objects.get(pk=self.id).image
+            else:
+                self.image = 'noimage.png'
+        super().save(*args, **kwargs)
+
 
 class Book(models.Model):
     """
@@ -72,7 +80,7 @@ class Rent(models.Model):
     Rent-Model
     Basic-Model to store rents.
     Linked to customer with foreign-key.
-    Linked to boos with many-to-many.
+    Linked to books with many-to-many.
     """
     begin = models.DateField(null=False)
     end = models.DateField(null=False)
@@ -86,3 +94,9 @@ class Rent(models.Model):
     def __str__(self):
         return '{} to {}, rented by {} {}'.format(self.begin, self.end, self.customer.first_name,
                                                   self.customer.last_name)
+
+    def delete(self, *args, **kwargs):
+        for book in self.books.all():
+            book.is_borrowed = False
+            book.save()
+        super().delete(*args, **kwargs)
