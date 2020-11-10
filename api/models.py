@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 
 
 class Author(models.Model):
@@ -100,3 +102,9 @@ class Rent(models.Model):
             book.is_borrowed = False
             book.save()
         super().delete(*args, **kwargs)
+
+
+@receiver(m2m_changed, sender=Rent.books.through)
+def m2m_change_handler_for_rent_books_through(sender, instance, action, **kwargs):
+    # Set is_barrowed of books based on event
+    pass

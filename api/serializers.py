@@ -24,6 +24,11 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
 
+    def validate_author_pks(self, authors):
+        # On crate and update: check if any authors are submitted
+        # No book without any authors
+        pass
+
 
 class AuthorSerializer(serializers.ModelSerializer):
     # Create field-list for nested-books
@@ -57,6 +62,13 @@ class RentSerializer(serializers.ModelSerializer):
         model = Rent
         fields = '__all__'
         depth = 1
+
+    def validate_book_pk(self, books):
+        # On create and update: check if any books are submitted
+        # No rent without any book
+        # On create: check if books are already rented
+        # On update: check if new books are already rented
+        pass
 
 
 class CustomerSerializer(serializers.ModelSerializer):
