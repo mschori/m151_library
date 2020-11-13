@@ -106,5 +106,22 @@ class Rent(models.Model):
 
 @receiver(m2m_changed, sender=Rent.books.through)
 def m2m_change_handler_for_rent_books_through(sender, instance, action, **kwargs):
-    # Set is_barrowed of books based on event
-    pass
+    """
+    Handler for m2m_change of table api_rent_books.
+    Changes the attribute "is_barrowed" of any book.
+    If book IS NOT part of the rent --> is_barrowed = False.
+    If book IS part of the rent --> is_barrowed = True.
+    """
+    if action == 'pre_remove' or action == 'pre_add':
+        change_borrow_of_book_list(instance.books.all(), False)
+    elif action == 'post_remove' or action == 'post_add':
+        change_borrow_of_book_list(instance.books.all(), True)
+
+
+def change_borrow_of_book_list(book_list: list, is_borrowed: bool):
+    """
+    Function to change attribute "is_barrowed" of books in book-list.
+    """
+    for book in book_list:
+        book.is_borrowed = is_borrowed
+        book.save()

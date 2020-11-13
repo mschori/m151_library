@@ -25,9 +25,13 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
 
     def validate_author_pks(self, authors):
-        # On crate and update: check if any authors are submitted
-        # No book without any authors
-        pass
+        """
+        Validate authors from book.
+        Check if any authors are selected. No books without authors!
+        """
+        if len(authors) == 0:
+            raise serializers.ValidationError('No authors selected. Please select some authors for this book. ')
+        return authors
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -64,11 +68,20 @@ class RentSerializer(serializers.ModelSerializer):
         depth = 1
 
     def validate_book_pk(self, books):
-        # On create and update: check if any books are submitted
-        # No rent without any book
-        # On create: check if books are already rented
-        # On update: check if new books are already rented
-        pass
+        """
+        Validate books to rent.
+        Check if any books are selected. No Rent without any book!
+        Check if books to rent are already borrowed.
+        If rent is update --> check if new books to rent are already borrowed.
+        """
+        if len(books) == 0:
+            raise serializers.ValidationError('No books selected. Please select some books to rent.')
+        old_list = [] if not self.instance else self.instance.books.all()
+        for book in books:
+            if book not in old_list and book.is_borrowed:
+                raise serializers.ValidationError(
+                    'The Book "{}" with the ID "{}" is already borrowed.'.format(book.title, book.id))
+        return books
 
 
 class CustomerSerializer(serializers.ModelSerializer):
