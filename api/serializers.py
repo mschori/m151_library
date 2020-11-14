@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Book, Author, Customer, Place, Rent
 from django.contrib.auth.models import User
+from django.contrib.auth import password_validation
+from django.core.exceptions import ValidationError
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -104,7 +106,19 @@ class UserSerializer(serializers.ModelSerializer):
                         'first_name': {'required': True}, 'last_name': {'required': True}}
 
     def create(self, validated_data):
-        pass
+        password = validated_data.pop('password', None)
+        try:
+            if User.objects.filter(email=validated_data.get('email')).exists():
+                raise serializers.ValidationError('Email already registered.')
+            password_validation.validate_password(password)
+        except ValidationError as ve:
+            raise serializers.ValidationError({'Password-Errors': [i for i in ve.messages]})
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
     def update(self, instance, validated_data):
-        pass
+        if User.objects.filter(email=validated_data.get('email')).exists():
+            raise serializers.ValidationError('Email already registered.')
+        return super(UserSerializer, self).update(instance, validated_data)
