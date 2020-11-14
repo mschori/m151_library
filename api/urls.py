@@ -8,6 +8,7 @@ routers.register(r'authors', api_views.AuthorViewSet)
 routers.register(r'places', api_views.PlaceViewSet)
 routers.register(r'customers', api_views.CustomerViewSet)
 routers.register(r'rents', api_views.RentViewSet)
+routers.register(r'users', api_views.UserViewSet)
 
 urlpatterns = [
     path('', include(routers.urls)),

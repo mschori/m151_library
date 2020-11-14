@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Book, Author, Customer, Place, Rent
+from django.contrib.auth.models import User
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -93,3 +94,17 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
         depth = 1
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name')
+        extra_kwargs = {'password': {'write_only': True}, 'id': {'read_only': True}, 'email': {'required': True},
+                        'first_name': {'required': True}, 'last_name': {'required': True}}
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
