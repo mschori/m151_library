@@ -5,8 +5,10 @@ from .serializers import BookSerializer, AuthorSerializer, PlaceSerializer, Rent
 from .models import Book, Author, Customer, Place, Rent
 from django.contrib.auth.models import User
 from .permissions import IsAuthenticatedOrPostOnly
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=['Book'])
 class BookViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -14,6 +16,7 @@ class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
 
 
+@extend_schema(tags=['Author'])
 class AuthorViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -21,6 +24,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     serializer_class = AuthorSerializer
 
 
+@extend_schema(tags=['Place'])
 class PlaceViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -28,6 +32,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
     serializer_class = PlaceSerializer
 
 
+@extend_schema(tags=['Customer'])
 class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -35,6 +40,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
 
 
+@extend_schema(tags=['Rent'])
 class RentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -42,6 +48,7 @@ class RentViewSet(viewsets.ModelViewSet):
     serializer_class = RentSerializer
 
 
+@extend_schema(tags=['User'])
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrPostOnly]
 
