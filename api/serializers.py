@@ -45,7 +45,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     book_list = BookSerializer(many=True, read_only=True, depth=0, fields=book_fields)
 
     # Change image-options to allow post/put/patch without an image
-    image = serializers.ImageField(allow_null=True)
+    image = serializers.ImageField(allow_null=True, required=False)
 
     class Meta:
         model = Author
