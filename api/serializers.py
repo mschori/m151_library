@@ -120,5 +120,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if User.objects.filter(email=validated_data.get('email')).exists():
-            raise serializers.ValidationError('Email already registered.')
+            user = User.objects.get(email=validated_data.get('email'))
+            if instance != user:
+                raise serializers.ValidationError('Email already registered.')
         return super(UserSerializer, self).update(instance, validated_data)
